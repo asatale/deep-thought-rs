@@ -1,0 +1,14 @@
+[workspace]
+resolver = "2"
+members = [
+    "roaring-bitmap",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+authors = ["Aniruddha Atale <aniruddha.atale@gmail.com>"]
+license = "MIT"
+
+[workspace.dependencies]
+# Common dependencies can be defined here and referenced by member crates
