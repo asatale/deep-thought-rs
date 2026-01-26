@@ -2,7 +2,6 @@
 resolver = "2"
 members = [
     "roaring-bitmap",
-    "skiplist",
 ]
 
 [workspace.package]
