@@ -91,6 +91,18 @@ Compressed bitmap data structure for efficiently storing sets of integers.
 
 [→ See detailed documentation](ROARING_BITMAP.md)
 
+#### [Skip List](skiplist/) ⏭️
+*"Probabilistic data structures have elegant properties."* — Deep Thought
+*"I suppose someone has to implement random number generators."* — Marvin
+
+A probabilistic alternative to balanced trees offering O(log n) search, insert, and delete operations.
+
+**Status:** 🚧 In Development
+**Features:** Probabilistic balancing, simpler than balanced trees
+**Built through:** Socratic dialog and iterative refinement
+
+[→ See detailed documentation](skiplist/README.md)
+
 ---
 
 ### Coming Soon
@@ -98,10 +110,6 @@ Compressed bitmap data structure for efficiently storing sets of integers.
 #### B+ Trees 🌳
 *"The tree structure offers interesting trade-offs."* — Deep Thought
 *"More trees. How original."* — Marvin
-
-#### Skip Lists ⏭️
-*"Probabilistic data structures have elegant properties."* — Deep Thought
-*"I suppose someone has to implement random number generators."* — Marvin
 
 #### Bloom Filters 🌸
 *"The false positive rate is mathematically intriguing."* — Deep Thought
@@ -137,6 +145,7 @@ cargo test
 
 # Run specific data structure tests
 cargo test --package roaring-bitmap
+cargo test --package skiplist
 
 # Build documentation
 cargo doc --open
@@ -264,9 +273,9 @@ Contributions welcome! Though Marvin will probably complain.
 - [x] Roaring Bitmap (compressed sets)
 
 ### Phase 2: Tree Structures 🚧
+- [x] Skip Lists (probabilistic balance)
 - [ ] B+ Trees (ordered maps)
 - [ ] Tries (prefix trees)
-- [ ] Skip Lists (probabilistic balance)
 
 ### Phase 3: Hash-Based Structures
 - [ ] Cuckoo Hash Table

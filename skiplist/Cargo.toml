@@ -1,0 +1,15 @@
+[package]
+name = "skiplist"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[lib]
+name = "skiplist"
+path = "lib.rs"
+
+[dependencies]
+smallvec = "1.13"
+
+[dev-dependencies]
