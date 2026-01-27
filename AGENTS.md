@@ -530,6 +530,189 @@ when removing elements during iteration.
 - [ ] Run clippy with no warnings: `cargo clippy --package <crate-name>`
 - [ ] Update root README.md to list the new data structure
 
+## Development Process for New Crates
+
+When creating a new crate or adding significant functionality, follow this disciplined process:
+
+### 1. Documentation First: Create README.md
+
+**ALWAYS** start by creating the crate's README.md before writing any code:
+
+- Document the purpose of the crate
+- Explain the problem it solves
+- Provide relevant background (algorithms, theory, use cases)
+- Include references to papers, articles, or existing implementations
+- Add usage examples (even if not yet implemented)
+- Document expected time/space complexity
+
+**Keep README.md updated** as functionality evolves. The README should always reflect the current state of the crate.
+
+### 2. API Design: Start with the Interface
+
+Before implementation, design the public API that users will interact with:
+
+**Research open source projects:**
+- Search GitHub, crates.io, and other repositories for similar implementations
+- Study how established libraries expose their APIs
+- Learn from both successful and unsuccessful designs
+- Note ergonomic patterns and anti-patterns
+
+**Provide API alternatives:**
+- Present 2-3 different API design options
+- Document pros and cons of each approach
+- Consider:
+  - Ease of use vs. flexibility
+  - Performance implications
+  - Memory overhead
+  - Type safety guarantees
+  - Compatibility with Rust idioms
+- Discuss trade-offs with rationale for final choice
+
+**Example:**
+```rust
+// Option A: Builder pattern (more flexible, slightly more verbose)
+let bitmap = RoaringBitmap::builder()
+    .add_range(0..100)
+    .add(500)
+    .build();
+
+// Option B: Direct construction with iterator (more concise)
+let bitmap = RoaringBitmap::from_iter(0..100);
+
+// Choose Option B for simplicity, add builder later if needed
+```
+
+### 3. Test-Driven Development: Tests Before Implementation
+
+**Write functional tests BEFORE implementing the feature:**
+
+- Start with integration tests that define expected behavior
+- Write tests for normal cases, edge cases, and error conditions
+- Document test coverage requirements in README.md
+
+**Code Coverage Target: >95%**
+
+Every crate must achieve at least 95% code coverage:
+- Use `cargo tarpaulin` or similar tools to measure coverage
+- Include coverage reports in CI/CD pipeline
+- Document untested code paths with justification
+
+```bash
+# Install tarpaulin
+cargo install cargo-tarpaulin
+
+# Generate coverage report
+cargo tarpaulin --out Html --output-dir coverage
+```
+
+### 4. Developer-Friendly Observability
+
+**Provide APIs for introspection and debugging:**
+
+Every crate should offer methods to help developers understand resource usage:
+
+```rust
+impl RoaringBitmap {
+    /// Returns the memory footprint in bytes
+    pub fn memory_usage(&self) -> usize {
+        // Calculate actual heap + stack usage
+    }
+
+    /// Returns detailed memory statistics
+    pub fn memory_stats(&self) -> MemoryStats {
+        MemoryStats {
+            heap_bytes: self.heap_size(),
+            stack_bytes: std::mem::size_of::<Self>(),
+            container_count: self.containers.len(),
+            // ...
+        }
+    }
+
+    /// Returns internal structure for debugging
+    pub fn debug_info(&self) -> String {
+        // Detailed internal state
+    }
+}
+```
+
+**Considerations:**
+- Expose `memory_usage()` or similar methods
+- Provide `statistics()` for operational metrics
+- Include `debug_info()` for troubleshooting
+- Document memory layout in doc comments
+- Add examples showing how to profile and optimize
+
+### 5. Document Critical Design Decisions
+
+**Create `/docs` folder within the crate for design documentation:**
+
+Any significant architectural or algorithmic decision must be documented:
+
+```
+crate-name/
+├── docs/
+│   ├── DESIGN.md           # Overall architecture decisions
+│   ├── ALGORITHMS.md       # Algorithm choices and complexity analysis
+│   ├── TUNING.md           # Performance tuning guide
+│   ├── TRADE_OFFS.md       # Design trade-offs made
+│   └── MEMORY_LAYOUT.md    # Internal memory organization
+```
+
+**What to document:**
+- Why one algorithm was chosen over alternatives
+- Trade-offs between performance, memory, and complexity
+- Any unsafe code usage and safety invariants
+- Container type choices (Vec vs. SmallVec vs. custom)
+- Optimization decisions and their impact
+- Compatibility considerations
+- Known limitations or future improvements
+
+**Example structure for DESIGN.md:**
+```markdown
+# Design Decisions
+
+## Container Choice: SmallVec vs Vec
+
+**Decision:** Use `SmallVec<[T; 4]>` for forward pointers
+
+**Rationale:**
+- 90% of skip list nodes have ≤4 levels
+- Avoids heap allocation for most nodes
+- Measured 15% performance improvement in benchmarks
+
+**Trade-offs:**
+- Slightly larger stack size for all nodes
+- Dependency on smallvec crate (justified by perf gain)
+
+**Alternatives considered:**
+1. `Vec<T>` - simpler but always heap allocates
+2. Custom inline array - more complex, similar perf
+```
+
+### Summary: Development Workflow
+
+```
+1. Create README.md (document purpose, background, API plans)
+   ↓
+2. Research similar projects (gather API design ideas)
+   ↓
+3. Design API alternatives (present options with pros/cons)
+   ↓
+4. Write comprehensive tests (aim for >95% coverage)
+   ↓
+5. Implement functionality (make tests pass)
+   ↓
+6. Add observability APIs (memory_usage, statistics, etc.)
+   ↓
+7. Document design decisions (create /docs with rationale)
+   ↓
+8. Update README.md (reflect completed functionality)
+   ↓
+9. Run full test suite + coverage (verify >95% coverage)
+   ↓
+10. Review and refactor (optimize, cleanup, document)
+```
+
 ## Security Considerations
 
 ### Memory Safety
