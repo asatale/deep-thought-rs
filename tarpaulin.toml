@@ -1,0 +1,28 @@
+# Tarpaulin Configuration for deep-thought-rs workspace
+# Excludes benchmark files from code coverage calculations
+
+[config]
+# Exclude benchmark test files - they are marked #[ignore] and not part of functional coverage
+# Use glob patterns with ** for recursive matching
+exclude-files = [
+    "**/tests/benchmarks/*",
+    "**/tests/performance.rs",
+]
+
+# Run tests in workspace mode
+workspace = true
+
+# Timeout for tests (2 minutes per test)
+timeout = "120s"
+
+# Output formats - can be overridden on command line
+out = ["Html", "Stdout"]
+
+# Coverage engine - use Llvm for accuracy
+engine = "Llvm"
+
+# Follow symbolic links
+follow-exec = true
+
+# Don't count lines in test functions themselves
+ignore-tests = true

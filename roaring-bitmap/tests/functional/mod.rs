@@ -25,10 +25,12 @@ pub fn expect_bitmap(bitmap: &RoaringBitmap, expected: &[u32]) {
 mod basic_operations;
 mod batch_removal;
 mod bulk_operations;
+mod container_set_operations;
 mod containers;
 mod iteration;
 mod memory;
 mod operators;
+mod operators_owned;
 mod optimization;
 mod regression;
 mod set_operations;
